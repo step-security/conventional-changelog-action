@@ -124,7 +124,7 @@ permissions:
   contents: write
 
 - name: Conventional Changelog Action
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
 ```
@@ -137,7 +137,7 @@ Overwrite everything
 
 ```yaml
 - name: Conventional Changelog Action
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
     git-message: 'chore(release): {version}'
@@ -159,7 +159,7 @@ No file changelog
 
 ```yaml
 - name: Conventional Changelog Action
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
     output-file: "false"
@@ -169,7 +169,7 @@ Tag only
 
 ```yaml
 - name: Conventional Changelog Action
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
     skip-commit: "true"
@@ -180,12 +180,12 @@ In CI you might not want to pull extra changes before tagging e.g. if running a 
 
 ```yaml
 - name: Checkout repository
-  uses: actions/checkout@v4
+  uses: actions/checkout@v6
   with:
     fetch-depth: 0
 
 - name: Conventional Changelog Action
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
     skip-git-pull: "true"
@@ -195,7 +195,7 @@ Use a custom file for versioning
 
 ```yaml
 - name: Conventional Changelog Action
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
     version-file: "my-custom-file.yaml"
@@ -205,7 +205,7 @@ Use a pre-commit hook
 
 ```yaml
 - name: Conventional Changelog Action
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
     pre-commit: some/path/pre-commit.js
@@ -216,7 +216,7 @@ Github releases
 ```yaml
 - name: Conventional Changelog Action
   id: changelog
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ${{ secrets.github_token }}
     output-file: "false"
@@ -239,38 +239,16 @@ To make full use of the Deploy Key, you must set the value of github-token input
 
 ```yaml
 - name: Checkout GitHub Action
-  uses: actions/checkout@v4
+  uses: actions/checkout@v6
   with:
     ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
 - name: Conventional Changelog Action
   id: changelog
-  uses: step-security/conventional-changelog-action@v5
+  uses: step-security/conventional-changelog-action@v6
   with:
     github-token: ""
-```
-
-## Development
-
-If you'd like to contribute to this project, all you need to do is clone and install [act](https://github.com/nektos/act) this project and run:
-
-> Note: The image used is 18 gb!
-
-```shell
-$ npm install
-
-# To run / test one specific job
-$ act -j <workflow job name> -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04 --quiet
-# Example
-$ act -j test-json -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04 --quiet
-
-# To run all tests
-$ act pull_request -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04 --quiet
 ```
 
 ## [License](./LICENSE)
 
 Conventional Changelog Action is [MIT licensed](./LICENSE).
-
-## Collaboration
-
-If you have questions or [issues](https://github.com/step-security/conventional-changelog-action/issues), please [open an issue](https://github.com/step-security/conventional-changelog-action/issues/new)!

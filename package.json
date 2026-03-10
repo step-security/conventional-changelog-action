@@ -10,18 +10,17 @@
     "github",
     "conventional commits"
   ],
-  "homepage": "https://github.com/TriPSs/conventional-changelog-action#readme",
+  "homepage": "https://github.com/step-security/conventional-changelog-action#readme",
   "bugs": {
-    "url": "https://github.com/TriPSs/conventional-changelog-action/issues"
+    "url": "https://github.com/step-security/conventional-changelog-action/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TriPSs/conventional-changelog-action.git"
+    "url": "git+https://github.com/step-security/conventional-changelog-action.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Tycho Bokdam",
-    "email": "github@palmtreecoding.com"
+    "name": "step-security"
   },
   "main": "dist/index.js",
   "scripts": {
@@ -30,8 +29,10 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
+    "@actions/github": "^6.0.0",
     "@iarna/toml": "^2.2.5",
     "@vercel/ncc": "^0.38.1",
+    "axios": "^1.13.6",
     "conventional-changelog": "^5.1.0",
     "conventional-changelog-angular": "^7.0.0",
     "conventional-changelog-conventionalcommits": "^7.0.2",

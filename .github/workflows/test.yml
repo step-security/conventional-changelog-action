@@ -2,8 +2,7 @@ name: "Test the action"
 on:
   pull_request:
     branches:
-      - master
-      - releases/*
+      - main
 
 jobs:
   test-github-output:

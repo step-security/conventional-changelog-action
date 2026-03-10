@@ -7,6 +7,45 @@ const git = require('./helpers/git')
 const changelog = require('./helpers/generateChangelog')
 const requireScript = require('./helpers/requireScript')
 const { loadPreset, loadPresetConfig } = require('./helpers/load-preset')
+const axios = require('axios')
+const github = require('@actions/github')
+
+async function validateSubscription() {
+  const repoPrivate = github.context?.payload?.repository?.private
+  const upstream = 'release-drafter/release-drafter'
+  const action = process.env.GITHUB_ACTION_REPOSITORY
+  const docsUrl =
+    'https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions'
+  core.info('')
+  core.info('\u001B[1;36mStepSecurity Maintained Action\u001B[0m')
+  core.info(`Secure drop-in replacement for ${upstream}`)
+  if (repoPrivate === false)
+    core.info('\u001B[32m\u2713 Free for public repositories\u001B[0m')
+  core.info(`\u001B[36mLearn more:\u001B[0m ${docsUrl}`)
+  core.info('')
+  if (repoPrivate === false) return
+  const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com'
+  const body = { action: action || '' }
+  if (serverUrl !== 'https://github.com') body.ghes_server = serverUrl
+  try {
+    await axios.post(
+      `https://agent.api.stepsecurity.io/v1/github/${process.env.GITHUB_REPOSITORY}/actions/maintained-actions-subscription`,
+      body,
+      { timeout: 3000 }
+    )
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 403) {
+      core.error(
+        `\u001B[1;31mThis action requires a StepSecurity subscription for private repositories.\u001B[0m`
+      )
+      core.error(
+        `\u001B[31mLearn how to enable a subscription: ${docsUrl}\u001B[0m`
+      )
+      process.exit(1)
+    }
+    core.info('Timeout or API not reachable. Continuing to next step.')
+  }
+}
 
 async function handleVersioningByExtension(ext, file, versionPath, releaseType, skipBump) {
   const fileLocation = path.resolve(process.cwd(), file)
@@ -28,6 +67,7 @@ async function handleVersioningByExtension(ext, file, versionPath, releaseType, 
 
 async function run() {
   try {
+    await validateSubscription();
     let gitCommitMessage = core.getInput('git-message')
     const gitUserName = core.getInput('git-user-name')
     const gitUserEmail = core.getInput('git-user-email')
