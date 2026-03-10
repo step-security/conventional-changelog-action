@@ -12,7 +12,7 @@ const github = require('@actions/github')
 
 async function validateSubscription() {
   const repoPrivate = github.context?.payload?.repository?.private
-  const upstream = 'release-drafter/release-drafter'
+  const upstream = 'TriPSs/conventional-changelog-action'
   const action = process.env.GITHUB_ACTION_REPOSITORY
   const docsUrl =
     'https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions'
