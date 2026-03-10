@@ -1,0 +1,46 @@
+{
+  "name": "conventional-changelog-action",
+  "version": "6.2.0",
+  "description": "Github Action that generates a changelog with the Conventional Changelog CLI",
+  "keywords": [
+    "actions",
+    "changelog",
+    "commits",
+    "conventional",
+    "github",
+    "conventional commits"
+  ],
+  "homepage": "https://github.com/TriPSs/conventional-changelog-action#readme",
+  "bugs": {
+    "url": "https://github.com/TriPSs/conventional-changelog-action/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TriPSs/conventional-changelog-action.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Tycho Bokdam",
+    "email": "github@palmtreecoding.com"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx ncc build ./src/index.js --out ./dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1",
+    "@iarna/toml": "^2.2.5",
+    "@vercel/ncc": "^0.38.1",
+    "conventional-changelog": "^5.1.0",
+    "conventional-changelog-angular": "^7.0.0",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "conventional-changelog-eslint": "^5.0.0",
+    "conventional-recommended-bump": "^9.0.0",
+    "git-semver-tags": "7.0.1",
+    "object-path": "^0.11.8",
+    "properties": "^1.2.1",
+    "semver": "^7.6.3",
+    "yaml": "^2.6.0"
+  }
+}
