@@ -19,11 +19,11 @@ module.exports = new (class Git {
 
     // if the env is dont-use-git then we mock exec as we are testing a workflow
     if (ENV === 'dont-use-git') {
-      this.exec = (command) => {
-        const fullCommand = `git ${command}`
-        
+      this.exec = (command, args) => {
+        const fullCommand = args ? `git ${command} ${args.join(' ')}` : `git ${command}`
+
         console.log(`Skipping "${fullCommand}" because of test env`)
-        
+
         if (!fullCommand.includes('git remote set-url origin')) {
           this.commandsRun.push(fullCommand)
         }
@@ -53,7 +53,7 @@ module.exports = new (class Git {
    * @param command
    * @return {Promise<>}
    */
-  exec = (command) => new Promise(async (resolve, reject) => {
+  exec = (command, args) => new Promise(async (resolve, reject) => {
     let execOutput = ''
 
     const options = {
@@ -64,7 +64,7 @@ module.exports = new (class Git {
       },
     }
 
-    const exitCode = await exec.exec(`git ${command}`, null, options)
+    const exitCode = await exec.exec(`git ${command}`, args || null, options)
 
     if (exitCode === 0) {
       resolve(execOutput)
@@ -100,11 +100,11 @@ module.exports = new (class Git {
    */
   commit = (message, options = {}) => {
     const {noVerify} = options
-    const args = [`commit -m "${message}"`]
+    const args = ['-m', message]
     if (noVerify) {
-      args.push("--no-verify")
+      args.push('--no-verify')
     }
-    return this.exec(args.join(" "))
+    return this.exec('commit', args)
   }
 
   /**
@@ -164,7 +164,7 @@ module.exports = new (class Git {
    * @param tag
    * @return {Promise<>}
    */
-  createTag = (tag) => this.exec(`tag -a ${tag} -m "${tag}"`)
+  createTag = (tag) => this.exec('tag', ['-a', tag, '-m', tag])
 
   /**
    * Validates the commands run
@@ -185,15 +185,15 @@ module.exports = new (class Git {
       if (!SKIPPED_COMMIT) {
         expectedCommands.push('git add .')
         if (SKIP_CI === 'false') {
-          expectedCommands.push(`git commit -m "chore(release): ${EXPECTED_TAG}"`)
+          expectedCommands.push(`git commit -m chore(release): ${EXPECTED_TAG}`)
 
         } else {
-          expectedCommands.push(`git commit -m "chore(release): ${EXPECTED_TAG} [skip ci]"`)
+          expectedCommands.push(`git commit -m chore(release): ${EXPECTED_TAG} [skip ci]`)
         }
       }
 
       if(!SKIPPED_TAG) {
-        expectedCommands.push(`git tag -a ${EXPECTED_TAG} -m "${EXPECTED_TAG}"`)
+        expectedCommands.push(`git tag -a ${EXPECTED_TAG} -m ${EXPECTED_TAG}`)
       } 
 
       if (!EXPECTED_NO_PUSH) {

@@ -10591,9 +10591,9 @@ const { resolve } = __nccwpck_require__(16928)
 
 async function createWriterOpts () {
   const [template, header, commit, footer] = await Promise.all([
-    readFile(__nccwpck_require__.ab + "template2.hbs", 'utf-8'),
-    readFile(__nccwpck_require__.ab + "header2.hbs", 'utf-8'),
-    readFile(__nccwpck_require__.ab + "commit2.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "template1.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "header1.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "commit1.hbs", 'utf-8'),
     readFile(__nccwpck_require__.ab + "footer1.hbs", 'utf-8')
   ])
   const writerOpts = getWriterOpts()
@@ -10935,9 +10935,9 @@ async function createWriterOpts (config) {
     commit,
     footer
   ] = await Promise.all([
-    readFile(__nccwpck_require__.ab + "template1.hbs", 'utf-8'),
-    readFile(__nccwpck_require__.ab + "header1.hbs", 'utf-8'),
-    readFile(__nccwpck_require__.ab + "commit1.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "template.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "header.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "commit.hbs", 'utf-8'),
     readFile(__nccwpck_require__.ab + "footer.hbs", 'utf-8')
   ])
   const writerOpts = getWriterOpts(finalConfig)
@@ -11753,9 +11753,9 @@ const { resolve } = __nccwpck_require__(16928)
 
 async function createWriterOpts () {
   const [template, header, commit] = await Promise.all([
-    readFile(__nccwpck_require__.ab + "template.hbs", 'utf-8'),
-    readFile(__nccwpck_require__.ab + "header.hbs", 'utf-8'),
-    readFile(__nccwpck_require__.ab + "commit.hbs", 'utf-8')
+    readFile(__nccwpck_require__.ab + "template2.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "header2.hbs", 'utf-8'),
+    readFile(__nccwpck_require__.ab + "commit2.hbs", 'utf-8')
   ])
   const writerOpts = getWriterOpts()
 
@@ -53645,11 +53645,11 @@ module.exports = new (class Git {
 
     // if the env is dont-use-git then we mock exec as we are testing a workflow
     if (ENV === 'dont-use-git') {
-      this.exec = (command) => {
-        const fullCommand = `git ${command}`
-        
+      this.exec = (command, args) => {
+        const fullCommand = args ? `git ${command} ${args.join(' ')}` : `git ${command}`
+
         console.log(`Skipping "${fullCommand}" because of test env`)
-        
+
         if (!fullCommand.includes('git remote set-url origin')) {
           this.commandsRun.push(fullCommand)
         }
@@ -53679,7 +53679,7 @@ module.exports = new (class Git {
    * @param command
    * @return {Promise<>}
    */
-  exec = (command) => new Promise(async (resolve, reject) => {
+  exec = (command, args) => new Promise(async (resolve, reject) => {
     let execOutput = ''
 
     const options = {
@@ -53690,7 +53690,7 @@ module.exports = new (class Git {
       },
     }
 
-    const exitCode = await exec.exec(`git ${command}`, null, options)
+    const exitCode = await exec.exec(`git ${command}`, args || null, options)
 
     if (exitCode === 0) {
       resolve(execOutput)
@@ -53726,11 +53726,11 @@ module.exports = new (class Git {
    */
   commit = (message, options = {}) => {
     const {noVerify} = options
-    const args = [`commit -m "${message}"`]
+    const args = ['-m', message]
     if (noVerify) {
-      args.push("--no-verify")
+      args.push('--no-verify')
     }
-    return this.exec(args.join(" "))
+    return this.exec('commit', args)
   }
 
   /**
@@ -53790,7 +53790,7 @@ module.exports = new (class Git {
    * @param tag
    * @return {Promise<>}
    */
-  createTag = (tag) => this.exec(`tag -a ${tag} -m "${tag}"`)
+  createTag = (tag) => this.exec('tag', ['-a', tag, '-m', tag])
 
   /**
    * Validates the commands run
@@ -53811,15 +53811,15 @@ module.exports = new (class Git {
       if (!SKIPPED_COMMIT) {
         expectedCommands.push('git add .')
         if (SKIP_CI === 'false') {
-          expectedCommands.push(`git commit -m "chore(release): ${EXPECTED_TAG}"`)
+          expectedCommands.push(`git commit -m chore(release): ${EXPECTED_TAG}`)
 
         } else {
-          expectedCommands.push(`git commit -m "chore(release): ${EXPECTED_TAG} [skip ci]"`)
+          expectedCommands.push(`git commit -m chore(release): ${EXPECTED_TAG} [skip ci]`)
         }
       }
 
       if(!SKIPPED_TAG) {
-        expectedCommands.push(`git tag -a ${EXPECTED_TAG} -m "${EXPECTED_TAG}"`)
+        expectedCommands.push(`git tag -a ${EXPECTED_TAG} -m ${EXPECTED_TAG}`)
       } 
 
       if (!EXPECTED_NO_PUSH) {
@@ -53891,12 +53891,20 @@ const path = __nccwpck_require__(16928)
 const fs = __nccwpck_require__(79896)
 
 /**
- * Requires an script
+ * Requires a script after validating it resides within the workspace.
  *
  * @param file
  */
 module.exports = (file) => {
-  const fileLocation = path.resolve(process.cwd(), file)
+  const workspace = process.env.GITHUB_WORKSPACE || process.cwd()
+  const fileLocation = path.resolve(workspace, file)
+  const resolvedWorkspace = fs.realpathSync(workspace)
+
+  // Ensure the resolved path is within the workspace to prevent path traversal
+  if (!fileLocation.startsWith(resolvedWorkspace + path.sep) && fileLocation !== resolvedWorkspace) {
+    core.error(`Script path "${file}" resolves to "${fileLocation}" which is outside the workspace "${resolvedWorkspace}"`)
+    return undefined
+  }
 
   // Double check the script exists before loading it
   if (fs.existsSync(fileLocation)) {
@@ -53905,7 +53913,7 @@ module.exports = (file) => {
     return require(fileLocation)
   }
 
-  core.error(`Tried to load "${fileLocation}" script but it does not exists!`)
+  core.error(`Tried to load "${fileLocation}" script but it does not exist!`)
 
   return undefined
 }
