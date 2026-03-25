@@ -8,10 +8,16 @@ const changelog = require('./helpers/generateChangelog')
 const requireScript = require('./helpers/requireScript')
 const { loadPreset, loadPresetConfig } = require('./helpers/load-preset')
 const axios = require('axios')
-const github = require('@actions/github')
+const fs = require('fs')
 
 async function validateSubscription() {
-  const repoPrivate = github.context?.payload?.repository?.private
+  const eventPath = process.env.GITHUB_EVENT_PATH
+  let repoPrivate
+
+  if (eventPath && fs.existsSync(eventPath)) {
+    const eventData = JSON.parse(fs.readFileSync(eventPath, 'utf8'))
+    repoPrivate = eventData?.repository?.private
+  }
   const upstream = 'TriPSs/conventional-changelog-action'
   const action = process.env.GITHUB_ACTION_REPOSITORY
   const docsUrl =
