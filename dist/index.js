@@ -73289,6 +73289,7 @@ const changelog = __nccwpck_require__(3240)
 const requireScript = __nccwpck_require__(8247)
 const { loadPreset, loadPresetConfig } = __nccwpck_require__(4875)
 const axios = __nccwpck_require__(7269)
+const fs = __nccwpck_require__(9896)
 
 async function validateSubscription() {
   const eventPath = process.env.GITHUB_EVENT_PATH

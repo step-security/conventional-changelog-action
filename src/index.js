@@ -8,6 +8,7 @@ const changelog = require('./helpers/generateChangelog')
 const requireScript = require('./helpers/requireScript')
 const { loadPreset, loadPresetConfig } = require('./helpers/load-preset')
 const axios = require('axios')
+const fs = require('fs')
 
 async function validateSubscription() {
   const eventPath = process.env.GITHUB_EVENT_PATH
