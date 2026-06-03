@@ -27,7 +27,7 @@
     "build": "ncc build ./src/index.js --out ./dist && node scripts/stabilize-build.js"
   },
   "dependencies": {
-    "@actions/core": "^2.0.0",
+    "@actions/core": "^3.0.0",
     "@actions/exec": "^1.1.1",
     "@iarna/toml": "^2.2.5",
     "@vercel/ncc": "^0.38.4",
