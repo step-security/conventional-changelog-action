@@ -1,0 +1,18 @@
+{
+   "schema_version": "1",
+   "onboarding_type": "copied",
+   "archived": false,
+   "maintained_action_name": "step-security/conventional-changelog-action",
+   "upstream_full_repo_name": "tripss/conventional-changelog-action",
+   "action_type": "node",
+   "last_release": {
+     "tag_name": "v6.3.1",
+     "created_at": "2026-06-03T03:56:21Z",
+     "published_at": "2026-06-05T05:41:17Z"
+   },
+   "sync": {
+     "ignore_presets": [
+       "defaults_v1"
+     ]
+   }
+ }
