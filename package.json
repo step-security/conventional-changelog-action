@@ -1,14 +1,14 @@
 {
   "name": "conventional-changelog-action",
-  "version": "6.4.0",
+  "version": "6.5.0",
   "description": "Github Action that generates a changelog with the Conventional Changelog CLI",
   "keywords": [
     "actions",
     "changelog",
     "commits",
+    "conventional commits",
     "conventional",
-    "github",
-    "conventional commits"
+    "github"
   ],
   "homepage": "https://github.com/step-security/conventional-changelog-action#readme",
   "bugs": {
